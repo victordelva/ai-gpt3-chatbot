@@ -1,6 +1,6 @@
 import { Layout, Text, Page } from '@vercel/examples-ui'
 import { Chat } from '../components/Chat'
-import {useRouter} from "next/router";
+import { GetServerSidePropsContext } from 'next';
 
 function Home({ authValid }: { authValid: boolean }) {
 
@@ -27,7 +27,7 @@ function Home({ authValid }: { authValid: boolean }) {
 Home.Layout = Layout
 
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
     const authValid = (context?.query?.auth === process.env.AUTH_APP);
     return {
         props: {
