@@ -72,10 +72,12 @@ export function Chat() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        auth: 'civ',
       },
       body: JSON.stringify({
         messages: last10messages,
         user: cookie[COOKIE_NAME],
+
       }),
     })
 

@@ -11,7 +11,13 @@ export const config = {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  const body = await req.json()
+  const body = await req.json();
+  const auth = await req.headers.get('auth');
+  const authValid = (auth === 'civ');
+
+  if (!authValid) {
+    return new Response('Unauthorized', { status: 401 });
+  }
 
   const messages: ChatGPTMessage[] = [
     {
