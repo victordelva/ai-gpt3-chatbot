@@ -2,7 +2,7 @@ import { Layout, Text, Page } from '@vercel/examples-ui'
 import { Chat } from '../components/Chat'
 import {useRouter} from "next/router";
 
-function Home({ authValid }) {
+function Home({ authValid }: { authValid: boolean }) {
 
     return (
         <Page className="flex flex-col gap-12">
