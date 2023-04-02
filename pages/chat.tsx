@@ -5,19 +5,16 @@ import { GetServerSidePropsContext } from 'next';
 function Home({ authValid }: { authValid: boolean }) {
 
     return (
-        <Page className="flex flex-col gap-12">
-            <section className="flex flex-col gap-3">
+        <Page className="w-full">
+            <section className="w-full">
                 <Text variant="h2">AI Chat Bot:</Text>
-                <div className="lg:w-2/3">
+                <div>
                     {authValid ? <Chat /> : <Text className="text-zinc-600">You are not authorized to use this app</Text>}
                 </div>
             </section>
         </Page>
     )
 }
-
-Home.Layout = Layout
-
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const authValid = (context?.query?.auth === process.env.AUTH_APP);
