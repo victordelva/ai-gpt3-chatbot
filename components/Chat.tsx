@@ -9,6 +9,7 @@ const COOKIE_NAME = 'nextjs-example-ai-chat-gpt3'
 export const initialMessages: ChatGPTMessage[] = [
   {
     role: 'assistant',
+    followIt: false,
     content: 'Hi! I am a friendly AI assistant. Ask me anything!',
   },
 ]
@@ -50,6 +51,17 @@ export function Chat() {
   const [loading, setLoading] = useState(false)
   const [cookie, setCookie] = useCookies([COOKIE_NAME])
 
+  const onChangeFollowIt = (index: number, followIt: boolean) => {
+    console.log(index);
+    const newMessages = messages;
+    newMessages[index] = {
+      ...newMessages[index],
+      followIt: followIt
+    }
+    console.log({newMessages});
+    setMessages(newMessages);
+  }
+
   useEffect(() => {
     if (!cookie[COOKIE_NAME]) {
       // generate a semi random short id
@@ -63,7 +75,7 @@ export function Chat() {
     setLoading(true)
     const newMessages = [
       ...messages,
-      { role: 'user', content: message } as ChatGPTMessage,
+      { role: 'user', content: message, followIt: true } as ChatGPTMessage,
     ]
     setMessages(newMessages)
     const last10messages = newMessages.slice(-10) // remember last 10 messages
@@ -117,8 +129,10 @@ export function Chat() {
 
   return (
     <div className="rounded-2xl border-zinc-100  lg:border lg:p-6">
-      {messages.map(({ content, role }, index) => (
-        <ChatLine key={index} role={role} content={content} />
+      {messages.map(({ content, role, followIt }, index) => (
+        <ChatLine key={index} role={role} content={content} followIt={followIt} onChangeFollowIt={(value:boolean) =>  {
+          onChangeFollowIt(index, value)
+        }} />
       ))}
 
       {loading && <LoadingChatLine />}

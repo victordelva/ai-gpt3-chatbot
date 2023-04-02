@@ -22,6 +22,7 @@ const handler = async (req: Request): Promise<Response> => {
   const messages: ChatGPTMessage[] = [
     {
       role: 'system',
+      followIt: false,
       content: `An AI assistant that is a Front-end expert in Next.js, React and Vercel have an inspiring and humorous conversation. 
       AI assistant is a brand new, powerful, human-like artificial intelligence. 
       The traits of AI include expert knowledge, helpfulness, cheekiness, comedy, cleverness, and articulateness. 
@@ -45,7 +46,12 @@ const handler = async (req: Request): Promise<Response> => {
 
   const payload: OpenAIStreamPayload = {
     model: 'gpt-3.5-turbo',
-    messages: messages,
+    messages: messages.filter(message => message.followIt).map(message => {
+      return {
+        role: message.role,
+        content: message.content
+      }
+    }),
     temperature: process.env.AI_TEMP ? parseFloat(process.env.AI_TEMP) : 0.7,
     max_tokens: process.env.AI_MAX_TOKENS
       ? parseInt(process.env.AI_MAX_TOKENS)
@@ -57,6 +63,7 @@ const handler = async (req: Request): Promise<Response> => {
     user: body?.user,
     n: 1,
   }
+  console.log(payload);
 
   const stream = await OpenAIStream(payload)
   return new Response(stream)

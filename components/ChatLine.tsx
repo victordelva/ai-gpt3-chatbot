@@ -1,13 +1,11 @@
 import clsx from 'clsx'
-import Balancer from 'react-wrap-balancer'
-
-// wrap Balancer to remove type errors :( - @TODO - fix this ugly hack
-const BalancerWrapper = (props: any) => <Balancer {...props} />
+import {useState} from "react";
 
 type ChatGPTAgent = 'user' | 'system' | 'assistant'
 
 export interface ChatGPTMessage {
   role: ChatGPTAgent
+  followIt: boolean
   content: string
 }
 
@@ -42,10 +40,18 @@ const convertNewLines = (text: string) =>
     </span>
   ))
 
-export function ChatLine({ role = 'assistant', content }: ChatGPTMessage) {
+export function ChatLine({ role = 'assistant', content, followIt: initialFollowIt, onChangeFollowIt }: ChatGPTMessage & {onChangeFollowIt: any }) {
+  const [followIt, setFollowIt] = useState(initialFollowIt);
+
   if (!content) {
     return null
   }
+
+  const handleChange = (e: any) => {
+    setFollowIt(!followIt);
+    onChangeFollowIt(!followIt);
+  };
+
   const formatteMessage = convertNewLines(content)
 
   return (
@@ -54,12 +60,12 @@ export function ChatLine({ role = 'assistant', content }: ChatGPTMessage) {
         role != 'assistant' ? 'float-right clear-both' : 'float-left clear-both'
       }
     >
-      <BalancerWrapper>
         <div className="float-right mb-5 rounded-lg bg-white px-4 py-5 shadow-lg ring-1 ring-zinc-100 sm:px-6">
           <div className="flex space-x-3">
             <div className="flex-1 gap-4">
               <p className="font-large text-xxl text-gray-900">
                 <a href="#" className="hover:underline">
+                    <input type={"checkbox"} checked={followIt} onChange={handleChange}></input>
                   {role == 'assistant' ? 'AI' : 'You'}
                 </a>
               </p>
@@ -74,7 +80,6 @@ export function ChatLine({ role = 'assistant', content }: ChatGPTMessage) {
             </div>
           </div>
         </div>
-      </BalancerWrapper>
     </div>
   )
 }
